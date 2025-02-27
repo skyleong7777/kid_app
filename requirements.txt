@@ -1,0 +1,6 @@
+kivy==2.1.0
+matplotlib==3.5.2
+numpy==1.23.1
+cryptography==37.0.4
+pillow==9.2.0
+kivy-garden.matplotlib==0.1.0
