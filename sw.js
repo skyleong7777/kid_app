@@ -1,5 +1,5 @@
 /* Little Learning Garden service worker: instant start and offline use after the first visit. Content files stay encrypted in the cache. */
-const VERSION = "14.5", SHELL = 'llg-shell-' + VERSION, DATA = 'llg-data-1';
+const VERSION = "14.6", SHELL = 'llg-shell-' + VERSION, DATA = 'llg-data-1';
 self.addEventListener('install', e => { e.waitUntil(caches.open(SHELL).then(c => c.addAll(['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png'])).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('llg-') && k !== SHELL && k !== DATA).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 const keep = (name, req, res) => { if (res && res.ok && res.type === 'basic') { const copy = res.clone(); caches.open(name).then(c => c.put(req, copy)); } return res; };

@@ -8,19 +8,22 @@
 body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f6f1e3;font-family:system-ui,-apple-system,'PingFang TC',sans-serif;color:#244c46}
 #gate{background:#fffaf0;border-radius:28px;padding:34px 30px;width:min(420px,88vw);text-align:center;box-shadow:0 10px 40px #0001}
 #gate h1{font-size:26px;margin:8px 0 2px}#gate p{margin:4px 0 18px;color:#5d6f63}#gate .big{font-size:64px;line-height:1}
-#gate input{width:100%;box-sizing:border-box;font-size:20px;padding:14px 16px;border-radius:16px;border:2px solid #cfd8c4;background:#fff;color:#244c46}
+#gate #showrow{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;font-size:16px;color:#5d6f63}
+#gate #show{width:22px;height:22px;margin:0}
+#gate #pw{width:100%;box-sizing:border-box;font-size:20px;padding:14px 16px;border-radius:16px;border:2px solid #cfd8c4;background:#fff;color:#244c46}
 #gate button{margin-top:14px;width:100%;font-size:22px;font-weight:800;padding:14px;border:0;border-radius:18px;background:#23695d;color:#fff;cursor:pointer}
 #gate button:disabled{opacity:.6}#gate #msg{min-height:24px;margin-top:12px;font-weight:700}#gate #msg.bad{color:#b4442f}
 #gate input:focus-visible,#gate button:focus-visible{outline:4px solid #cd922d;outline-offset:2px}#gate [hidden]{display:none}
 </style></head><body>
 <main id="gate"><div class="big">🌱</div><h1>Little Learning Garden</h1><p>小小學習樂園 · 家庭密碼 Family password</p>
 <form id="f" hidden><label for="pw" style="position:absolute;left:-9999px">Password 密碼</label>
-<input id="pw" type="password" placeholder="Password 密碼" autocomplete="current-password" required>
-<button id="go" type="submit">Enter 進入</button></form><div id="msg" role="status">Loading… 載入中</div></main>
+<input id="pw" name="password" type="password" inputmode="text" enterkeyhint="go" placeholder="Tap here · 按這裡輸入密碼" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" required>
+<label id="showrow"><input id="show" type="checkbox"> Show password 顯示密碼</label>
+<button id="go" type="submit">Enter 進入</button></form><div id="msg" role="status">Loading… 載入中</div><p style="margin:18px 0 0;font-size:12px;color:#8a9a8f">© 2026 SKYLEONG. All rights reserved.</p></main>
 <script>
 (async function(){
 'use strict';
-const VER="14.5",$=id=>document.getElementById(id),msg=(t,bad)=>{const m=$('msg');if(m){m.textContent=t;m.className=bad?'bad':''}};
+const VER="14.6",$=id=>document.getElementById(id),msg=(t,bad)=>{const m=$('msg');if(m){m.textContent=t;m.className=bad?'bad':''}};
 const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)),toB64=u=>{let t='';for(let i=0;i<u.length;i++)t+=String.fromCharCode(u[i]);return btoa(t)};
 if(!window.crypto||!crypto.subtle){msg('This page needs a secure (https) connection. 需要 https 連線。',true);return}
 let key=null,meta;
@@ -47,7 +50,8 @@ async function boot(){
 try{meta=await fetch('d/meta.json',{cache:'no-cache'}).then(r=>r.json())}catch(e){msg('Cannot load. Check the internet connection. 載入失敗，請檢查網絡。',true);return}
 let saved=null;try{saved=localStorage.getItem('llg_k')}catch(e){}
 if(saved){try{await useKey(b64(saved));if(await check()){try{await boot()}catch(e){msg('Cannot load. Check the internet connection. 載入失敗，請檢查網絡。',true)}return}}catch(e){}}
-msg('');$('f').hidden=false;$('pw').focus();
+msg('');$('f').hidden=false;
+$('show').addEventListener('change',e=>{$('pw').type=e.target.checked?'text':'password'});
 $('f').addEventListener('submit',async e=>{e.preventDefault();$('go').disabled=true;msg('Checking… 檢查中');
   try{const raw=await derive($('pw').value);await useKey(raw);
     if(!(await check())){msg('Wrong password. 密碼不正確。',true);$('go').disabled=false;return}
