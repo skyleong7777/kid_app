@@ -23,7 +23,7 @@ body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:c
 <script>
 (async function(){
 'use strict';
-const VER="14.15",$=id=>document.getElementById(id),msg=(t,bad)=>{const m=$('msg');if(m){m.textContent=t;m.className=bad?'bad':''}};
+const VER="14.16",$=id=>document.getElementById(id),msg=(t,bad)=>{const m=$('msg');if(m){m.textContent=t;m.className=bad?'bad':''}};
 const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)),toB64=u=>{let t='';for(let i=0;i<u.length;i++)t+=String.fromCharCode(u[i]);return btoa(t)};
 if(!window.crypto||!crypto.subtle){msg('This page needs a secure (https) connection. 需要 https 連線。',true);return}
 let key=null,meta;
